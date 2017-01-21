@@ -19,26 +19,26 @@ class PostInstallCommand(install):
         with open(path, 'w+') as external_mods_file:
             external_mods['serial_provider_cog'] = {
                 'modules': [
-                    {'prefix': 'serial_provider.modules.serial_module', 'class_name': 'SerialProvider'}
+                    {'prefix': 'serial_cog.modules.serial_module', 'class_name': 'SerialProvider'}
                 ],
                 'recorders': []
             }
-            external_mods['serial_provider_cog']['modules'] = ['serial_provider.modules.serial_module.SerialModule']
             yaml.dump(external_mods, external_mods_file)
         install.run(self)
 
 
 setup(
-    name='serial_provider_cog',
+    name='serial_cog',
     version='0.1',
-    packages=['serial_provider', 'serial_provider.modules'],
+    packages=['serial_cog.modules'],
     url='',
     license='',
     author='Michal Raska',
     author_email='michal.raska@gmail.com',
     description='',
-    install_requires=['up', 'pyyaml', 'twisted', 'pyserial'],
+    install_requires=['up', 'pyyaml', 'pyserial'],
     cmdclass={
         'install': PostInstallCommand,
+        'develop': PostInstallCommand,
     }
 )
