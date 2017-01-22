@@ -17,7 +17,7 @@ class PostInstallCommand(install):
             if external_mods is None:
                 external_mods = {}
         with open(path, 'w+') as external_mods_file:
-            external_mods['serial_provider_cog'] = {
+            external_mods['serial_cog'] = {
                 'modules': [
                     {'prefix': 'serial_cog.modules.serial_module', 'class_name': 'SerialProvider'}
                 ],
