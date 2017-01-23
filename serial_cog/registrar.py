@@ -2,8 +2,11 @@ from up.registrar import UpRegistrar
 
 
 class Registrar(UpRegistrar):
+
+    NAME = 'serial_cog'
+
     def __init__(self):
-        super().__init__('serial_cog')
+        super().__init__(self.NAME)
 
     def register(self):
         external_modules = self._load_external_modules()
