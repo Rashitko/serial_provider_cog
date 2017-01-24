@@ -28,7 +28,7 @@ class SerialProvider(BaseStartedModule):
 
     def send_command(self, cmd, data=None):
         try:
-            self.logger.debug("Sending command %s" % cmd)
+            self.logger.debug("Sending command %s with payload %s" % (cmd, data))
             self.__serial.write(bytes(cmd, 'utf-8'))
             if data:
                 self.__serial.write(data)
@@ -112,7 +112,14 @@ class SerialCommandHandler:
         self.__handlers[cmd_type_bytes] = None
 
     def execute_action(self, cmd_type_bytes, payload):
-        cmd_type = cmd_type_bytes.decode('utf-8')
+        cmd_type = None
+        try:
+            cmd_type = cmd_type_bytes.decode('utf-8')
+        except UnicodeDecodeError:
+            self.__logger.debug('Unicode error, data are %s' % cmd_type_bytes)
+        if cmd_type is None:
+            return
+
         self.__logger.debug("Executing action for cmd type '%s'" % cmd_type)
         handler = self.__handlers.get(cmd_type_bytes, None)
         if handler:
