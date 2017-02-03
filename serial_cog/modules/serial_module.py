@@ -19,6 +19,7 @@ class SerialProvider(BaseStartedModule):
         self.__is_connected = False
         self.__receive_loop_lock = None
         self.__handler = SerialCommandHandler()
+        self.__was_serial_error = False
 
     def add_handler(self, cmd_type, handler, payload_size=0, args=None):
         self.__handler.add_handler(cmd_type, handler, payload_size, args)
@@ -60,9 +61,9 @@ class SerialProvider(BaseStartedModule):
     def __receive_loop(self):
         while self.__serial.is_open:
             try:
+                cmd_type = self.__serial.read(1)
                 if self.__receive_loop_lock:
                     self.__receive_loop_lock.set()
-                cmd_type = self.__serial.read(1)
                 self.__is_connected = True
                 payload_size = self.__handler.get_command_payload_size(cmd_type)
                 payload = self.__serial.read(payload_size)
@@ -70,11 +71,14 @@ class SerialProvider(BaseStartedModule):
             except serial.SerialException as e:
                 if self.started:
                     self._log_critical("Error during receiving Arduino data. Error was {}".format(e))
+                    self.__serial.close()
             except TypeError as e:
                 if not self.started:
                     pass
                 else:
+                    self.__is_connected = False
                     raise e
+        self.__is_connected = False
 
     def load(self):
         return True
@@ -94,6 +98,10 @@ class SerialProvider(BaseStartedModule):
     @baud_rate.setter
     def baud_rate(self, value):
         self.__baud_rate = value
+
+    @property
+    def connected(self):
+        return self.__is_connected
 
 
 class SerialCommandHandler:
