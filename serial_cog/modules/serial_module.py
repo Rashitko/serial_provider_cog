@@ -1,11 +1,11 @@
-from threading import Event, Thread
+from threading import Event
 
 import serial
-from up.base_started_module import BaseStartedModule
+from up.base_thread_module import BaseThreadModule
 from up.utils.up_logger import UpLogger
 
 
-class SerialProvider(BaseStartedModule):
+class SerialProvider(BaseThreadModule):
     BAUD_RATE_DEFAULT = 9600
     LOAD_ORDER = 0
 
@@ -37,7 +37,7 @@ class SerialProvider(BaseStartedModule):
             self._log_error("An error occurred during transmission to Arduino. Error was {}".format(e))
 
     def _execute_initialization(self):
-        pass
+        super()._execute_initialization()
 
     def _execute_start(self):
         if not self.port or not self.baud_rate:
@@ -48,18 +48,21 @@ class SerialProvider(BaseStartedModule):
         self.__serial.baudrate = self.baud_rate
         self.__serial.open()
         self.__receive_loop_lock = Event()
-        Thread(target=self.__receive_loop).start()
+
+        super()._execute_start()
+
         self.__receive_loop_lock.wait(10)
         self.logger.debug('Serial port opened')
         return self.__serial.is_open
 
     def _execute_stop(self):
+        super()._execute_stop()
         if self.__serial and self.__serial.is_open:
             self.__serial.close()
             self.__is_connected = False
 
-    def __receive_loop(self):
-        while self.__serial.is_open:
+    def _loop(self):
+        while self._run and self.__serial.is_open:
             try:
                 cmd_type = self.__serial.read(1)
                 if self.__receive_loop_lock:
