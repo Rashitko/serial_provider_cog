@@ -29,10 +29,11 @@ class SerialProvider(BaseThreadModule):
 
     def send_command(self, cmd, data=None):
         try:
-            self.logger.debug("Sending command %s with payload %s" % (cmd, data))
-            self.__serial.write(bytes(cmd, 'utf-8'))
-            if data:
-                self.__serial.write(data)
+            if self.__serial.is_open:
+                self.logger.debug("Sending command %s with payload %s" % (cmd, data))
+                self.__serial.write(bytes(cmd, 'utf-8'))
+                if data:
+                    self.__serial.write(data)
         except serial.SerialException as e:
             self._log_error("An error occurred during transmission to Arduino. Error was {}".format(e))
 
