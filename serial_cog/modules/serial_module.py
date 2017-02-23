@@ -57,17 +57,16 @@ class SerialProvider(BaseThreadModule):
         return self.__serial.is_open
 
     def _execute_stop(self):
-        super()._execute_stop()
         if self.__serial and self.__serial.is_open:
             self.__serial.close()
             self.__is_connected = False
+        super()._execute_stop()
 
     def _loop(self):
-        while self._run and self.__serial.is_open:
+        while self.__serial.is_open:
             try:
+                self.__receive_loop_lock.set()
                 cmd_type = self.__serial.read(1)
-                if self.__receive_loop_lock:
-                    self.__receive_loop_lock.set()
                 self.__is_connected = True
                 payload_size = self.__handler.get_command_payload_size(cmd_type)
                 payload = self.__serial.read(payload_size)
