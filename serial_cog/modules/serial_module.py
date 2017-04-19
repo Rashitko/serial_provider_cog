@@ -29,7 +29,7 @@ class SerialProvider(BaseThreadModule):
 
     def send_command(self, cmd, data=None):
         try:
-            if self.__serial.is_open:
+            if self.__serial is not None and self.__serial.is_open:
                 self.logger.debug("Sending command %s with payload %s" % (cmd, data))
                 self.__serial.write(bytes(cmd, 'utf-8'))
                 if data:
