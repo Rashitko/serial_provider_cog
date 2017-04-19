@@ -12,6 +12,6 @@ setup(
     description='',
     install_requires=['up', 'pyyaml', 'pyserial'],
     package_data={
-        'serial_cog': ['serial_cog/registered_modules.yml']
+        'serial_cog': ['registered_modules.yml']
     }
 )
