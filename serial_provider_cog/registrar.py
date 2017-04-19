@@ -3,7 +3,7 @@ from up.registrar import UpRegistrar
 
 class Registrar(UpRegistrar):
 
-    NAME = 'serial_cog'
+    NAME = 'serial_provider_cog'
 
     def __init__(self):
         super().__init__(self.NAME)
