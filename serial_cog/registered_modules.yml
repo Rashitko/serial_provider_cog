@@ -1,3 +1,0 @@
-modules:
-- {class_name: SerialProvider, prefix: serial_cog.modules.serial_module}
-recorders: []

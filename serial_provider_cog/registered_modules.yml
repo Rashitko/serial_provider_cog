@@ -1,0 +1,2 @@
+modules:
+- {class_name: SerialProvider, prefix: serial_provider_cog.modules.serial_module}
