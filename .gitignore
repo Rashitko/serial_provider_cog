@@ -1,5 +1,5 @@
 .idea
 build
-serial_cog.egg-info
+serial_provider_cog.egg-info
 **/__pycache__
 dist
